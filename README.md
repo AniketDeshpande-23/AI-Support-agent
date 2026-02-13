@@ -1,10 +1,10 @@
-# 🤖 AI Support Ticket Agent
+#  AI Support Ticket Agent
 
 An AI-powered support automation system that analyzes customer tickets, retrieves relevant documentation using RAG (Retrieval-Augmented Generation), generates professional responses, and routes issues intelligently — all running locally with Ollama.
 
 ---
 
-## 🚀 Overview
+##  Overview
 
 AI Support Ticket Agent simulates a real-world support workflow.
 
@@ -23,7 +23,7 @@ Everything runs locally using open-source models.
 
 ---
 
-## 🏗 Key Features
+##  Key Features
 
 - AI-powered ticket classification  
 - Priority detection  
@@ -39,7 +39,7 @@ Everything runs locally using open-source models.
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ai-support-agent/
@@ -64,9 +64,9 @@ ai-support-agent/
 
 ---
 
-## ⚙️ Installation
+##  Installation
 
-### 1️⃣ Clone Repository
+### 1️ Clone Repository
 
 ```bash
 git clone https://github.com/AniketDeshpande-23/ai-support-agent.git
@@ -75,7 +75,7 @@ cd ai-support-agent
 
 ---
 
-### 2️⃣ Create Virtual Environment
+### 2️ Create Virtual Environment
 
 ```bash
 python -m venv venv
@@ -95,7 +95,7 @@ source venv/bin/activate
 
 ---
 
-### 3️⃣ Install Dependencies
+### 3️ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -103,7 +103,7 @@ pip install -r requirements.txt
 
 ---
 
-### 4️⃣ Install Ollama
+### 4️ Install Ollama
 
 Download and install from:
 
@@ -118,7 +118,7 @@ ollama pull nomic-embed-text
 
 ---
 
-## ▶️ Running the Application
+## ▶ Running the Application
 
 ### Start Backend
 
@@ -144,7 +144,7 @@ streamlit run ui/app.py
 
 ---
 
-## 🧠 How to Use
+##  How to Use
 
 1. Open the Streamlit interface.
 2. Enter a customer support ticket in the text area.
@@ -161,7 +161,7 @@ All tickets are automatically recorded in the local database.
 
 ---
 
-## 🔄 Automation Ready
+##  Automation Ready
 
 The backend returns structured JSON like:
 
@@ -188,7 +188,7 @@ You can automate routing or escalation based on confidence and priority.
 
 ---
 
-## 📊 Ticket Logging
+##  Ticket Logging
 
 Every processed ticket is stored in:
 
@@ -211,7 +211,7 @@ This enables auditing and future analytics integration.
 
 ---
 
-## 🛠 Future Improvements
+##  Future Improvements
 
 - Admin dashboard for reviewing tickets  
 - Multi-turn conversation support  
@@ -221,7 +221,7 @@ This enables auditing and future analytics integration.
 
 ---
 
-## 💡 Why This Project
+##  Why This Project
 
 This project demonstrates:
 
