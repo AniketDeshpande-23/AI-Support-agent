@@ -1,0 +1,9 @@
+openai
+fastapi
+uvicorn
+langchain
+faiss-cpu
+pandas
+scikit-learn
+python-dotenv
+pydantic
