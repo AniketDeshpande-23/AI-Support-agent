@@ -1,4 +1,13 @@
 #  AI Support Ticket Agent
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Generative AI](https://img.shields.io/badge/AI-Generative%20AI-purple)
+![LLM](https://img.shields.io/badge/LLM-Ollama-orange)
+![RAG](https://img.shields.io/badge/RAG-FAISS%20Retrieval-blueviolet)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-ff4b4b?logo=streamlit&logoColor=white)
+![Automation](https://img.shields.io/badge/Automation-n8n%20Ready-yellow)
+![Status](https://img.shields.io/badge/Status-Active-success)
+
 
 An AI-powered support automation system that analyzes customer tickets, retrieves relevant documentation using RAG (Retrieval-Augmented Generation), generates professional responses, and routes issues intelligently — all running locally with Ollama.
 
