@@ -1,0 +1,67 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────
+#  AI Support Agent — Docker Compose
+#
+#  Usage (Ollama / local):
+#    docker compose --profile ollama up --build
+#
+#  Usage (OpenAI):
+#    LLM_PROVIDER=openai OPENAI_API_KEY=sk-... docker compose up --build
+# ─────────────────────────────────────────────────────────
+
+services:
+
+  # ── FastAPI backend ──────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data          # knowledge base + FAISS index
+      - db_data:/app              # persists support_logs.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+
+  # ── Streamlit frontend ───────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Optional: local Ollama server ────────────────────────
+  # Enable with: docker compose --profile ollama up
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    profiles:
+      - ollama
+    # After first start, pull models:
+    #   docker exec -it <container> ollama pull mistral
+    #   docker exec -it <container> ollama pull nomic-embed-text
+
+
+volumes:
+  db_data:
+  ollama_data:
