@@ -27,7 +27,7 @@ export function useMetrics(autoRefreshMs: number | null) {
     try {
       const [metrics, tickets] = await Promise.all([
         getMetrics(controller.signal),
-        getTickets(200, 0, controller.signal),
+        getTickets(200, 0, undefined, controller.signal),
       ]);
       if (!mounted.current) return;
       setState({ data: { metrics, tickets }, loading: false, error: null });

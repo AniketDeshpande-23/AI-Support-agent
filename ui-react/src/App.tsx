@@ -3,13 +3,15 @@ import { Sidebar } from './components/Sidebar';
 import { AnalyzeView } from './views/AnalyzeView';
 import { DashboardView } from './views/DashboardView';
 import { LiveFeedView } from './views/LiveFeedView';
+import { ReviewView } from './views/ReviewView';
 import type { ViewKey } from './types';
 import { Keyboard, X } from 'lucide-react';
 
 const TITLES: Record<ViewKey, { title: string; sub: string }> = {
   analyze: { title: 'Analyze', sub: 'Classify, prioritize, route and draft a reply for a ticket' },
   dashboard: { title: 'Dashboard', sub: 'Operational metrics derived from the agent pipeline' },
-  feed: { title: 'Live Feed', sub: 'Real-time stream of analyzed tickets' },
+  feed:   { title: 'Live Feed',     sub: 'Real-time stream of analyzed tickets' },
+  review: { title: 'Review Queue',  sub: 'Human review for low-confidence tickets' },
 };
 
 function isTyping(): boolean {
@@ -81,7 +83,8 @@ export default function App() {
         <main className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
           {view === 'analyze' && <AnalyzeView />}
           {view === 'dashboard' && <DashboardView />}
-          {view === 'feed' && <LiveFeedView />}
+          {view === 'feed'   && <LiveFeedView />}
+          {view === 'review' && <ReviewView />}
         </main>
       </div>
 

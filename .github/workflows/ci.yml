@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend — import + lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Import check
+        run: python -c "import app.main; import app.agent; import app.pipeline; print('OK')"
+
+      - name: Lint (ruff)
+        run: |
+          pip install ruff
+          ruff check app/ --select E,F --ignore E501
+
+  react:
+    name: React UI — typecheck + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ui-react/package-lock.json
+
+      - name: Install
+        working-directory: ui-react
+        run: npm ci
+
+      - name: Type-check
+        working-directory: ui-react
+        run: npx tsc --noEmit
+
+      - name: Build
+        working-directory: ui-react
+        run: npm run build

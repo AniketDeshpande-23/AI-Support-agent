@@ -66,23 +66,85 @@ async function request(path: string, init?: RequestInit): Promise<Response> {
   }
 }
 
-export async function analyze(text: string, signal?: AbortSignal): Promise<AnalyzeResult> {
-  const res = await request('/analyze', {
-    method: 'POST',
-    body: JSON.stringify({ text }),
-    signal,
-  });
-  if (!res.ok) throw await toApiError(res);
-  const raw: unknown = await res.json();
+function parseAnalyzeResult(raw: unknown): AnalyzeResult {
   const r = (raw ?? {}) as Record<string, unknown>;
   return {
-    category: asString(r.category, 'Uncategorized'),
-    priority: asPriority(r.priority),
-    confidence: Math.round(asNumber(r.confidence) * 10), // backend: 0-10 → UI: 0-100
-    grounded: asBool(r.grounded),
-    route_to: asString(r.route_to, 'Unassigned'),
+    ticket_id:   typeof r.ticket_id === 'number' ? r.ticket_id : 0,
+    category:    asString(r.category, 'Uncategorized'),
+    priority:    asPriority(r.priority),
+    confidence:  Math.round(asNumber(r.confidence) * 10), // backend 0-10 -> UI 0-100
+    grounded:    asBool(r.grounded),
+    route_to:    asString(r.route_to, 'Unassigned'),
     reply_draft: asString(r.reply_draft),
   };
+}
+
+export async function analyze(
+  text: string,
+  options?: { customer_id?: string; thread_id?: string; signal?: AbortSignal },
+): Promise<AnalyzeResult> {
+  const res = await request('/analyze', {
+    method: 'POST',
+    body: JSON.stringify({
+      text,
+      customer_id: options?.customer_id ?? '',
+      thread_id:   options?.thread_id   ?? '',
+    }),
+    signal: options?.signal,
+  });
+  if (!res.ok) throw await toApiError(res);
+  return parseAnalyzeResult(await res.json());
+}
+
+export function analyzeStream(
+  text: string,
+  opts: {
+    customer_id?: string;
+    thread_id?: string;
+    onEvent: (event: string, payload: Record<string, unknown>) => void;
+    signal?: AbortSignal;
+  },
+): void {
+  fetch(`${API_BASE}/analyze/stream`, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, customer_id: opts.customer_id ?? '', thread_id: opts.thread_id ?? '' }),
+    signal: opts.signal,
+  })
+    .then(async (res) => {
+      if (!res.ok || !res.body) throw new Error('Stream failed');
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let   buf     = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n\n');
+        buf = lines.pop() ?? '';
+        for (const line of lines) {
+          const data = line.replace(/^data:\s*/, '').trim();
+          if (!data) continue;
+          try {
+            const p = JSON.parse(data) as Record<string, unknown>;
+            opts.onEvent(typeof p.event === 'string' ? p.event : 'unknown', p);
+          } catch { /* skip */ }
+        }
+      }
+    })
+    .catch((err) => {
+      if ((err as Error).name !== 'AbortError') opts.onEvent('error', { message: String(err) });
+    });
+}
+
+export async function submitFeedback(
+  ticketId: number,
+  body: import('./types').FeedbackRequest,
+): Promise<void> {
+  const res = await request(`/tickets/${ticketId}/feedback`, {
+    method: 'POST', body: JSON.stringify(body),
+  });
+  if (!res.ok) throw await toApiError(res);
 }
 
 export async function getHealth(signal?: AbortSignal): Promise<HealthResponse> {
@@ -91,19 +153,24 @@ export async function getHealth(signal?: AbortSignal): Promise<HealthResponse> {
   const raw: unknown = await res.json();
   const r = (raw ?? {}) as Record<string, unknown>;
   return {
-    status: asString(r.status, 'unknown'),
-    version: asString(r.version, '—'),
+    status:   asString(r.status, 'unknown'),
+    version:  asString(r.version, '—'),
     provider: asString(r.provider, '—'),
-    model: asString(r.model, '—'),
+    model:    asString(r.model, '—'),
+    auth:     asBool(r.auth),
   };
 }
 
 export async function getTickets(
   limit = 25,
   offset = 0,
+  route?: string,
   signal?: AbortSignal,
 ): Promise<Ticket[]> {
-  const res = await request(`/tickets?limit=${limit}&offset=${offset}`, { signal });
+  const qs = route
+    ? `/tickets?limit=${limit}&offset=${offset}&route=${encodeURIComponent(route)}`
+    : `/tickets?limit=${limit}&offset=${offset}`;
+  const res = await request(qs, { signal });
   if (!res.ok) throw await toApiError(res);
   const raw: unknown = await res.json();
   if (!Array.isArray(raw)) return [];
@@ -139,7 +206,9 @@ export async function getMetrics(signal?: AbortSignal): Promise<Metrics> {
   };
   return {
     total: asNumber(r.total),
-    avg_confidence: asNumber(r.avg_confidence) * 10, // backend: 0-10 → UI: 0-100
+    avg_confidence:     asNumber(r.avg_confidence) * 10,
+    human_review_count: asNumber(r.human_review_count),
+    grounding_rate:     asNumber(r.grounding_rate),
     by_category: rec(r.by_category),
     by_priority: rec(r.by_priority),
   };

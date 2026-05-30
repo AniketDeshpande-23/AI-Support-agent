@@ -1,18 +1,10 @@
 version: "3.9"
 
-# ─────────────────────────────────────────────────────────
-#  AI Support Agent — Docker Compose
-#
-#  Usage (Ollama / local):
-#    docker compose --profile ollama up --build
-#
-#  Usage (OpenAI):
-#    LLM_PROVIDER=openai OPENAI_API_KEY=sk-... docker compose up --build
-# ─────────────────────────────────────────────────────────
+# Usage (local Ollama):   docker compose --profile ollama up --build
+# Usage (OpenAI):         LLM_PROVIDER=openai OPENAI_API_KEY=sk-... docker compose up --build
 
 services:
 
-  # ── FastAPI backend ──────────────────────────────────────
   backend:
     build:
       context: .
@@ -22,18 +14,30 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/app/data          # knowledge base + FAISS index
-      - db_data:/app              # persists support_logs.db
+      - ./data:/app/data
+      - db_data:/app
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 15s
+      start_period: 20s
 
-  # ── Streamlit frontend ───────────────────────────────────
-  frontend:
+  ui-react:
+    build:
+      context: .
+      dockerfile: Dockerfile.react
+      args:
+        VITE_BACKEND_URL: http://backend:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ui-streamlit:
     build:
       context: .
       dockerfile: Dockerfile.ui
@@ -46,8 +50,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # ── Optional: local Ollama server ────────────────────────
-  # Enable with: docker compose --profile ollama up
   ollama:
     image: ollama/ollama:latest
     ports:
@@ -57,10 +59,6 @@ services:
     restart: unless-stopped
     profiles:
       - ollama
-    # After first start, pull models:
-    #   docker exec -it <container> ollama pull mistral
-    #   docker exec -it <container> ollama pull nomic-embed-text
-
 
 volumes:
   db_data:

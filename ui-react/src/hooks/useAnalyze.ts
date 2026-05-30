@@ -22,7 +22,7 @@ export function useAnalyze() {
     abortRef.current = controller;
     setState((s) => ({ ...s, loading: true, error: null }));
     try {
-      const result = await analyze(text, controller.signal);
+      const result = await analyze(text, { signal: controller.signal });
       if (controller.signal.aborted) return;
       setState({ result, loading: false, error: null });
     } catch (err) {

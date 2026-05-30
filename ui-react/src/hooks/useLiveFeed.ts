@@ -27,7 +27,7 @@ export function useLiveFeed(paused: boolean) {
     if (!silent) setState((s) => ({ ...s, loading: true, error: null }));
     const controller = new AbortController();
     try {
-      const tickets = await getTickets(25, 0, controller.signal);
+      const tickets = await getTickets(25, 0, undefined, controller.signal);
       if (!mounted.current) return;
       setState({ tickets, loading: false, error: null, lastUpdated: Date.now() });
     } catch (err) {

@@ -3,9 +3,12 @@ export type HealthStatus = 'healthy' | 'degraded' | 'down';
 
 export interface AnalyzeRequest {
   text: string;
+  customer_id?: string;
+  thread_id?: string;
 }
 
 export interface AnalyzeResult {
+  ticket_id: number;
   category: string;
   priority: Priority;
   confidence: number; // 0-100
@@ -19,11 +22,12 @@ export interface HealthResponse {
   version: string;
   provider: string;
   model: string;
+  auth: boolean;
 }
 
 export interface Ticket {
   id: string | number;
-  timestamp: string; // ISO
+  timestamp: string;
   ticket_text: string;
   category: string;
   priority: Priority;
@@ -31,13 +35,23 @@ export interface Ticket {
   grounded: boolean;
   route_to: string;
   reply: string;
+  customer_id?: string;
+  thread_id?: string;
 }
 
 export interface Metrics {
   total: number;
   avg_confidence: number;
+  human_review_count: number;
+  grounding_rate: number;
   by_category: Record<string, number>;
   by_priority: Record<string, number>;
+}
+
+export interface FeedbackRequest {
+  approved: boolean;
+  corrected_category?: string | null;
+  corrected_reply?: string | null;
 }
 
 export type ApiErrorKind = 'validation' | 'rate_limit' | 'server' | 'network';
@@ -56,4 +70,4 @@ export class ApiError extends Error {
   }
 }
 
-export type ViewKey = 'analyze' | 'dashboard' | 'feed';
+export type ViewKey = 'analyze' | 'dashboard' | 'feed' | 'review';

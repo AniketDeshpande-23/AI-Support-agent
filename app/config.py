@@ -55,6 +55,8 @@ class Settings(BaseSettings):
     DB_PATH: str = "support_logs.db"
     LOG_LEVEL: str = "INFO"
     RATE_LIMIT: str = "10/minute"
+    API_KEY: str = ""           # empty = auth disabled
+    RETENTION_DAYS: int = 90    # delete tickets older than N days
 
 
 @lru_cache(maxsize=1)
