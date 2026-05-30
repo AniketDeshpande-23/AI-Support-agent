@@ -28,3 +28,7 @@ scikit-learn>=1.4.0
 # UI
 streamlit>=1.35.0
 requests>=2.31.0
+plotly>=5.20.0
+
+# Dataset (for building knowledge base)
+datasets>=2.0.0
