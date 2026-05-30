@@ -73,7 +73,18 @@ _FALLBACK = {
 # ── JSON extraction ───────────────────────────────────────────────────────────
 
 def _extract_json(text: str) -> dict:
-    """Robustly extract JSON from LLM output, handling markdown fences and prose."""
+    """
+    Robustly extract JSON from LLM output.
+
+    Handles:
+      - Plain JSON
+      - ```json ... ``` markdown fences
+      - <think>...</think> reasoning blocks (Qwen3, DeepSeek-R1, etc.)
+      - Prose before/after the JSON object
+    """
+    # 0. Strip <think>...</think> reasoning blocks first (Qwen3 / DeepSeek-R1)
+    text = re.sub(r"<think>[\s\S]*?</think>", "", text, flags=re.IGNORECASE).strip()
+
     # 1. Direct parse
     try:
         return json.loads(text.strip())
@@ -89,7 +100,7 @@ def _extract_json(text: str) -> dict:
 
     # 3. Extract outermost {...} block (greedy — first { to last })
     try:
-        match = re.search(r"\{[\s\S]*\}", text)
+        match = re.search(r"\{[\s\S]*\}", stripped)
         if match:
             return json.loads(match.group())
     except (json.JSONDecodeError, AttributeError):

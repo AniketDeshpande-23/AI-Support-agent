@@ -80,7 +80,7 @@ def get_llm():
         model=settings.OLLAMA_MODEL,
         temperature=0.2,
         base_url=settings.OLLAMA_BASE_URL,
-        num_predict=1500,   # reply field alone can be 300+ tokens
+        num_predict=4000,   # Qwen3 thinking chains + reply field need headroom
     )
 
 
