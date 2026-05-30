@@ -16,10 +16,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
+import io as _io
+_log_stream = (
+    _io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    if hasattr(sys.stdout, "buffer") else sys.stdout
+)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
+    handlers=[logging.StreamHandler(_log_stream)],
 )
 logger = logging.getLogger(__name__)
 
@@ -80,7 +85,7 @@ def get_llm():
         model=settings.OLLAMA_MODEL,
         temperature=0.2,
         base_url=settings.OLLAMA_BASE_URL,
-        num_predict=4000,   # Qwen3 thinking chains + reply field need headroom
+        num_predict=3000,   # qwen3.5 thinking chain ~1500tok + JSON + reply ~500tok
     )
 
 
