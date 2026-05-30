@@ -72,13 +72,15 @@ def get_llm():
             api_key=settings.OPENAI_API_KEY,
         )
 
-    from langchain_ollama import OllamaLLM
+    # Use ChatOllama (chat API) — modern instruction-tuned models like gemma4, qwen3
+    # respond to the chat format, not raw text completion (OllamaLLM).
+    from langchain_ollama import ChatOllama
     logger.info(f"LLM provider: Ollama | model: {settings.OLLAMA_MODEL}")
-    return OllamaLLM(
+    return ChatOllama(
         model=settings.OLLAMA_MODEL,
         temperature=0.2,
         base_url=settings.OLLAMA_BASE_URL,
-        num_predict=400,
+        num_predict=1500,   # reply field alone can be 300+ tokens
     )
 
 

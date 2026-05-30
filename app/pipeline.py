@@ -80,16 +80,16 @@ def _extract_json(text: str) -> dict:
     except json.JSONDecodeError:
         pass
 
-    # 2. Strip markdown code fences
+    # 2. Strip markdown code fences (```json ... ```)
     stripped = re.sub(r"```(?:json)?", "", text).strip()
     try:
         return json.loads(stripped)
     except json.JSONDecodeError:
         pass
 
-    # 3. Extract first {...} block
+    # 3. Extract outermost {...} block (greedy — first { to last })
     try:
-        match = re.search(r"\{[\s\S]*?\}", text)
+        match = re.search(r"\{[\s\S]*\}", text)
         if match:
             return json.loads(match.group())
     except (json.JSONDecodeError, AttributeError):
