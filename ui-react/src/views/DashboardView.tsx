@@ -77,7 +77,7 @@ function DashboardBody({
         name: p,
         value: metrics.by_priority[p] ?? 0,
         color: PRIORITY_COLORS[p],
-      })).filter((d) => d.value > 0 || true),
+      })).filter((d) => d.value > 0),
     [metrics.by_priority],
   );
 

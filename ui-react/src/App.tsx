@@ -97,7 +97,7 @@ const SHORTCUTS: { keys: string[]; label: string }[] = [
   { keys: ['g', 'a'], label: 'Navigate to Analyze' },
   { keys: ['g', 'd'], label: 'Navigate to Dashboard' },
   { keys: ['g', 'f'], label: 'Navigate to Feed' },
-  { keys: ['⌘', '↵'], label: 'Run analysis' },
+  { keys: ['Ctrl', '↵'], label: 'Run analysis' },
   { keys: ['?'], label: 'Toggle this cheatsheet' },
   { keys: ['Esc'], label: 'Close drawer / dialog' },
 ];

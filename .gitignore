@@ -20,3 +20,6 @@ data/*.pkl
 
 .DS_Store
 Thumbs.db
+
+ui-react/node_modules/
+ui-react/dist/

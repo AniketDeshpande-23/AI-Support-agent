@@ -78,7 +78,7 @@ export async function analyze(text: string, signal?: AbortSignal): Promise<Analy
   return {
     category: asString(r.category, 'Uncategorized'),
     priority: asPriority(r.priority),
-    confidence: Math.round(asNumber(r.confidence)),
+    confidence: Math.round(asNumber(r.confidence) * 10), // backend: 0-10 → UI: 0-100
     grounded: asBool(r.grounded),
     route_to: asString(r.route_to, 'Unassigned'),
     reply_draft: asString(r.reply_draft),
@@ -115,7 +115,7 @@ export async function getTickets(
       ticket_text: asString(r.ticket_text),
       category: asString(r.category, 'Uncategorized'),
       priority: asPriority(r.priority),
-      confidence: Math.round(asNumber(r.confidence)),
+      confidence: Math.round(asNumber(r.confidence) * 10), // backend: 0-10 → UI: 0-100
       grounded: asBool(r.grounded),
       route_to: asString(r.route_to, 'Unassigned'),
       reply: asString(r.reply),
@@ -139,7 +139,7 @@ export async function getMetrics(signal?: AbortSignal): Promise<Metrics> {
   };
   return {
     total: asNumber(r.total),
-    avg_confidence: asNumber(r.avg_confidence),
+    avg_confidence: asNumber(r.avg_confidence) * 10, // backend: 0-10 → UI: 0-100
     by_category: rec(r.by_category),
     by_priority: rec(r.by_priority),
   };

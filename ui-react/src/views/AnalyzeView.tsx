@@ -118,7 +118,7 @@ export function AnalyzeView() {
           </button>
           <span className="flex items-center gap-1 font-mono text-[11px] text-faint">
             <kbd className="rounded border border-hairline px-1 py-0.5">
-              <CornerDownLeft size={10} className="inline" /> ⌘
+              <CornerDownLeft size={10} className="inline" /> Ctrl
             </kbd>
             to run
           </span>
