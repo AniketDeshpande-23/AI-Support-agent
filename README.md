@@ -20,7 +20,7 @@ Customer ticket
 FAISS vector search → top-3 passages from knowledge base (Bitext 26k corpus)
       │
       ▼
-Single LLM call (gemma4:31b / GPT-4o-mini)
+Single LLM call (qwen3.5:9b / GPT-4o-mini)
   ├─ Category  : Account | Billing | Order | Shipping | Technical Support | Feedback | Other
   ├─ Priority  : Low | Medium | High | Critical
   ├─ Reply     : grounded in retrieved documentation
@@ -48,7 +48,7 @@ JSON response + SQLite log
 | Layer | Technology |
 |---|---|
 | Backend | FastAPI, Pydantic v2, slowapi |
-| LLM | Ollama (`gemma4:31b`) or OpenAI (`gpt-4o-mini`) |
+| LLM | Ollama (`qwen3.5:9b`) or OpenAI (`gpt-4o-mini`) |
 | Embeddings | `nomic-embed-text` (Ollama) or `text-embedding-3-small` (OpenAI) |
 | Vector store | FAISS (LangChain) |
 | Knowledge base | [Bitext Customer Support Dataset](https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset) — 26,872 Q&A pairs |
@@ -117,7 +117,7 @@ cp .env.example .env
 ```env
 LLM_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=gemma4:31b
+OLLAMA_MODEL=qwen3.5:9b
 OLLAMA_EMBED_MODEL=nomic-embed-text
 ```
 
@@ -126,7 +126,7 @@ Switch to OpenAI by setting `LLM_PROVIDER=openai` and adding `OPENAI_API_KEY`.
 ### 3. Pull Ollama models
 
 ```bash
-ollama pull gemma4:31b
+ollama pull qwen3.5:9b
 ollama pull nomic-embed-text
 ```
 
