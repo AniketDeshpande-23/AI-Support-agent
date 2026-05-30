@@ -9,7 +9,7 @@ support_logs.db
 *.db
 *.sqlite3
 
-data/knowledge_base.txt
+# knowledge_base.txt is tracked (built from public Bitext dataset)
 data/faiss_index/
 data/*.faiss
 data/*.pkl

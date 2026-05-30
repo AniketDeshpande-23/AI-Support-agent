@@ -21,16 +21,25 @@ _PROMPT = """You are an expert AI customer support analyst.
 
 Analyze the support ticket below using the provided documentation. In a single pass:
 
-1. Classify into ONE category: Billing | Login Issue | Bug Report | Feature Request | Other
+1. Classify into ONE category:
+   Account | Billing | Order | Shipping | Technical Support | Feedback | Other
+
 2. Assess urgency: Low | Medium | High | Critical
-3. Write a professional, empathetic response based ONLY on the documentation
-4. Rate confidence in your response (1–10)
-5. Set grounded=true only if the response is fully supported by the documentation
+
+3. Write a professional, empathetic response based ONLY on the documentation.
+   If the documentation does not cover the issue, say so and offer to escalate.
+
+4. Rate confidence in your response (1-10):
+   - 8-10: fully covered by docs
+   - 5-7:  partially covered
+   - 1-4:  not covered / uncertain
+
+5. Set grounded=true only if the response is fully supported by the documentation.
 
 Return ONLY valid JSON — no markdown fences, no extra text:
 
 {{
-  "category": "Login Issue",
+  "category": "Account",
   "priority": "High",
   "reply": "Dear customer, ...",
   "confidence": 8,
@@ -46,7 +55,10 @@ Relevant Documentation:
 
 # ── Validation constants ───────────────────────────────────────────────────────
 
-_VALID_CATEGORIES = {"Billing", "Login Issue", "Bug Report", "Feature Request", "Other"}
+_VALID_CATEGORIES = {
+    "Account", "Billing", "Order", "Shipping",
+    "Technical Support", "Feedback", "Other",
+}
 _VALID_PRIORITIES = {"Low", "Medium", "High", "Critical"}
 
 _FALLBACK = {
