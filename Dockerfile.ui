@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir streamlit requests pandas
+RUN pip install --no-cache-dir streamlit requests pandas plotly
 
 COPY ui/ ./ui/
 

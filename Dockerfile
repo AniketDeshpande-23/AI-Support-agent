@@ -22,6 +22,7 @@ COPY --from=builder /install /usr/local
 # Copy application code
 COPY app/       ./app/
 COPY data/      ./data/
+COPY scripts/   ./scripts/
 
 # Non-root user for security
 RUN useradd -m appuser && chown -R appuser /app

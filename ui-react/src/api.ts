@@ -7,7 +7,8 @@ import {
   type Ticket,
 } from './types';
 
-export const API_BASE = 'http://localhost:8000';
+export const API_BASE =
+  (import.meta.env.VITE_BACKEND_URL as string | undefined) ?? 'http://localhost:8000';
 
 const VALID_PRIORITIES: Priority[] = ['Critical', 'High', 'Medium', 'Low'];
 
