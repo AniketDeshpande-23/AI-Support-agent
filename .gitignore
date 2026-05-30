@@ -23,3 +23,14 @@ Thumbs.db
 
 ui-react/node_modules/
 ui-react/dist/
+ui-react/README.md
+ui-react/src/assets/vite.svg
+
+# Internal build / debug artifacts
+gan-harness/
+scripts/_test_*.py
+
+# Legacy unused modules (kept locally, not tracked)
+app/classifier.py
+app/responder.py
+app/sentiment.py
